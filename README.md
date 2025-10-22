@@ -792,8 +792,3 @@ print(result["establishment_1"])  # 250000.0
   3. Performans metriklerini Grafana/Kibana ile sürekli izlenebilir hale getirmek.  
   4. YAML parametre editörü için web tabanlı bir UI prototipi hazırlamak.
 
-Ekibimizdeki herkesin bu dokümana katkı vermesi ve sahada öğrendiklerini geri bildirmesi, OpenFisca tabanlı mevzuat motorunu sürdürülebilir ve denetlenebilir kılmanın en kritik parçası. Sorularınızı, önerilerinizi ya da yeni örneklerinizi birlikte incelemek için her zaman hazırız.  
-
-—  
-
-**Son güncelleme:** `README.md` dosyası; OpenFisca teşvik motoru geliştirme çalışmalarının teknik referansidir. Lütfen güncel tuttuğumuzdan emin olmak için yeni mevzuat değişikliklerinde bu rehberi kontrol edin ve gerekirse PR gönderin.
