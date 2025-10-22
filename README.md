@@ -221,6 +221,8 @@ Her prensip için:
 
 ### Single Responsibility (SRP)
 
+> **Tanım:** Her sınıfın veya modülün yalnızca tek bir sorumluluğu olsun.
+
 **İyi Örnek**
 
 - `parameters/legislation_2012_3305/investment_limits.yaml` yalnızca eşik tutarlarını saklar; YAML dosyası başka hiçbir sorumluluk almaz.  
@@ -282,6 +284,8 @@ class InvestmentSupportAmount(Variable):
 
 ### Open/Closed (OCP)
 
+> **Tanım:** Yazılım bileşenleri yeni davranışlara açık, mevcut kod değişimine kapalı kalmalıdır.
+
 **İyi**
 
 - 2024 oranı geldiğinde tek hamlemiz YAML’ye tarih bloğu eklemek; Python kodu değişmez.
@@ -334,6 +338,8 @@ class InvestmentSupportRate(Variable):
 
 ### Liskov Substitution (LSP)
 
+> **Tanım:** Türetilen sınıflar, ana sınıfların yerine sorunsuzca geçebilmelidir.
+
 **İyi**
 
 ```python
@@ -363,6 +369,8 @@ class InvestmentSupportRate(Variable):
 ```
 
 ### Interface Segregation (ISP)
+
+> **Tanım:** Nesneler yalnızca ihtiyaç duydukları arayüzlere bağımlı kalsın; gereksiz bağımlılık olmasın.
 
 **İyi**
 
@@ -407,6 +415,8 @@ class InvestmentSupportAmount(Variable):
 
 ### Dependency Inversion (DIP)
 
+> **Tanım:** Üst seviye modüller somut sınıflara değil, soyutlamalara bağımlı olmalıdır.
+
 **İyi**
 
 ```python
@@ -436,12 +446,12 @@ class InvestmentZone(Variable):
     def formula(entity, period, parameters):
         import csv
 
-        tax_code = entity("tax_office_code", period)
-        with open("vergi_dairesi_bolge.csv") as fh:
+        province_code = entity("province_code", period)
+        with open("il_bolge_haritasi.csv") as fh:
             for row in csv.DictReader(fh):
-                if row["tax_code"] == tax_code:
+                if row["province_code"] == province_code:
                     return row["zone"]
-        return "UNKNOWN"
+        return "BILINMIYOR"
 ```
 
 ---
@@ -499,19 +509,18 @@ print(trace["explanations"][0])
 
 ### RegionResolver – Ek-2A/Ek-2B
 
-- **Ek-2A:** Bölgesel destek için asgari yatırım tutarları ve sektör listelerini içerir; bölgeler TR11, TR62 vb.  
-- **Ek-2B:** İl bazlı listeler; hangi il hangi bölge teşvikinden yararlanıyor burada tanımlı.  
-- `RegionResolver`, vergi dairesi kodunu bu tablolara göre `zone1/zone2/...` anahtarına çevirir. İstanbul (3401) → `zone1`, Şanlıurfa (6302) → `zone6` gibi.  
-- Böylece formül “kod 34 ise zone1” gibi kırılgan kontrollerden kurtulur; YAML güncellemek yeterli olur.
+- **Ek-2A:** Sektör kodu, US-97 karşılığı ve bölge bazlı asgari yatırım tutarlarını içerir.  
+- **Ek-2B:** İl bazında hangi sektör numaralarının destek kapsamında olduğunu listeler.  
+- `RegionResolver`, ilin bağlı olduğu bölgeyi ve desteklenebilir sektör setini bu tablolardan okuyarak üretir. Formül tarafında “Ankara → 1. Bölge” veya “Adıyaman → 5. Bölge” bilgisi doğrudan resolver’dan gelir; kodda sabit koşul tutulmaz.
 
 ```python
 class ParameterRegionResolver(RegionResolver):
     def __init__(self, parameters):
         self._parameters = parameters
 
-    def resolve(self, code: str, period=None) -> str:
-        mapping = self._parameters.legislation_2012_3305.region_mapping(period)
-        return mapping.get(code, "UNKNOWN")
+    def resolve(self, province_code: str, period=None) -> str:
+        mapping = self._parameters.legislation_2012_3305.bolge_haritasi(period)
+        return mapping.get(province_code, "BILINMIYOR")
 ```
 
 Bu sayede formüller `if code.startswith("34")` gibi hatalı/genelleyici koşullardan kurtulur.
