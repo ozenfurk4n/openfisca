@@ -114,8 +114,8 @@
 ## Arka Plan ve Motivasyon
 
 - 2012/3305 sayılı Karar ve ekleri, yatırım teşvik ekosisteminin çekirdeğini oluşturuyor.  
-- ProLegal kapsamında kurduğumuz motor; teşvik türlerini, bölge bazlı avantajları, stratejik yatırım tanımlarını ve sürekli güncellenen mevzuatı bir arada çözmek zorunda.  
-- Son üç yılda topladığımız teknik gereksinimler:
+- ProLegal kapsamında kurduğumuz motor; teşvik türlerini, bölge bazlı avantajları, yatırım teşvijk türlerini ve sürekli güncellenen mevzuatı bir arada çözmek zorunda.  
+- Son üç hafta topladığımız teknik gereksinimler:
   - Parametre değişimleri için esnek ama denetlenebilir bir yapı,
   - Açıklanabilir (trace edilebilir) sonuçlar,
   - Agent tabanlı raporlama ile yönetici özetleri,
