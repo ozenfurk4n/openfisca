@@ -1,4 +1,4 @@
-# OpenFisca Geliştirici Rehberi – Nihai Teknik Doküman
+# OpenFisca Geliştirici Rehberi – Teknik Doküman
 
 > **Kapsam:** Bu doküman, ekibimizde mevzuat tabanlı teşvik, vergi ve sosyal politika modelleri geliştiren tüm mühendislerin referans alabileceği, operasyonel ayrıntıları derinlemesine açıklayan teknik bir çalışma setidir.  
 > **Hedef:** OpenFisca’yı; SOLID prensipleri, bağımlılık zinciri analizi, resolver soyutlamaları, loglama-performans-test-reform pratikleri ve Agent tabanlı raporlama katmanı ile birlikte kurumsal seviyeye taşımak.
