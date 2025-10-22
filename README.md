@@ -229,23 +229,56 @@ Her prensip için:
 
 ```python
 class InvestmentSupportAmount(Variable):
-    """SRP – Mezura gibi sadece ölçer, ekstra işe bulaşmaz."""
+    """SRP örneği: sınıf yalnızca teşvik tutarını hesaplar."""
     value_type = float
     entity = ...
     definition_period = periods.YEAR
 
     def formula(entity, period, parameters):
-        if not entity("investment_eligibility", period):
+        # 1) Gerekli girdileri oku; başka yan iş yapılmaz.
+        eligible = entity("investment_eligibility", period)
+        if not eligible:
             return 0.0
+
         base = entity("investment_base_amount", period)
         rate = entity("investment_support_rate", period)
+
+        # 2) Aynı sınıfın tek amacı: tutarı hesaplamak.
         return base * rate
 ```
 
 **Kötü Örnek**
 
-- Aynı sınıfın içinde `json.load`, `sqlite3.connect`, Slack bildirimi ve rapor yazdırma bulunması.  
-- Yarın log davranışını değiştirmek için bile formülü düzenlemek gerekir → SRP ihlali, test karmaşası.
+- Aynı sınıfın içinde dosya okuma, veritabanı bağlantısı, Slack bildirimi gibi yan sorumluluklar bulunuyor.  
+- Log davranışını değiştirmek için bile formülü düzenlemek gerekir → SRP ihlali, test karmaşası.
+
+```python
+class InvestmentSupportAmount(Variable):
+    """SRP ihlali: birden fazla sorumluluğu üstlenmiş."""
+
+    value_type = float
+    entity = ...
+    definition_period = periods.YEAR
+
+    def formula(entity, period, parameters):
+        import json
+        import sqlite3
+        from slack_sdk import WebClient
+
+        # Dosya açma → IO sorumluluğu
+        cfg = json.load(open("config.json"))
+
+        # Veritabanı bağlantısı → veri erişim sorumluluğu
+        sqlite3.connect(cfg["db_path"])
+
+        # Slack bildirimi → bildirim sorumluluğu
+        WebClient(token=cfg["slack"]).chat_postMessage(
+            channel="#alerts", text="Hesaplama tamamlandı"
+        )
+
+        # Asıl hesaplama net değil; sınıfın odağı kayboldu.
+        return 0.0
+```
 
 ### Open/Closed (OCP)
 
@@ -265,41 +298,151 @@ values:
 - `InvestmentSupportRate` içinde `if period.start.year >= 2024: ...` şeklinde koşul yazmak.  
 - Mevzuat değiştikçe yeni `elif` eklemek gerekir, testler büyür; OCP bozulur.
 
+```python
+class InvestmentSupportRate(Variable):
+    """OCP uyumlu: yeni tarihler YAML ile eklenir."""
+
+    value_type = float
+    entity = ...
+    definition_period = periods.YEAR
+
+    def formula(entity, period, parameters):
+        # Parametreler tarih duyarlı olduğu için kod değişmez.
+        rates = parameters.support_rates.values(period)
+        zone = entity("investment_zone", period)
+        scale = entity("investment_scale", period)
+        return rates[zone][scale]
+```
+
+```python
+class InvestmentSupportRate(Variable):
+    """OCP ihlali: mevzuat değişince kodu da değiştirmek gerekiyor."""
+
+    value_type = float
+    entity = ...
+    definition_period = periods.YEAR
+
+    def formula(entity, period, parameters):
+        year = period.start.year
+        # Tarihler koda gömülü → her yeni karar için yeni blok yazılmalı.
+        if year >= 2024:
+            return 0.32
+        if year >= 2021:
+            return 0.30
+        return 0.25
+```
+
 ### Liskov Substitution (LSP)
 
 **İyi**
 
-- Tüm değişkenler `Variable` sözleşmesini (`formula(entity, period, parameters)`) korur.  
-- Alt sınıflar üst sınıfın yerine sorunsuz geçebilir.
+```python
+class InvestmentSupportRate(Variable):
+    """LSP uyumlu: üst sınıfın sözleşmesine sadık."""
+
+    value_type = float
+    entity = ...
+    definition_period = periods.YEAR
+
+    def formula(entity, period, parameters):
+        zone = entity("investment_zone", period)
+        scale = entity("investment_scale", period)
+        rates = parameters.support_rates.values(period)
+        return rates[zone][scale]
+```
 
 **Kötü**
 
-- `InvestmentSupportRate` içerisinde `formula(self, simulation)` diye imzayı değiştirmek.  
-- Simulation motoru `TypeError` fırlatır; LSP ihlalidir.
+```python
+class InvestmentSupportRate(Variable):
+    """LSP ihlali: imza değişmiş, simulation motoru kullanamaz."""
+
+    def formula(self, simulation):
+        # entity/period/parameters bekleyen motor bu fonksiyonu çağırdığında hata alır.
+        return simulation.lookup_previous_rate()
+```
 
 ### Interface Segregation (ISP)
 
 **İyi**
 
-- `InvestmentSupportAmount` sadece `eligibility`, `base_amount`, `rate` değişkenlerini kullanır.
-- Test stub’ları küçük; değişiklik yapmak kolay.
+```python
+class InvestmentSupportAmount(Variable):
+    """ISP uyumlu: sadece ihtiyaç duyduğu değişkenleri kullanır."""
+
+    value_type = float
+    entity = ...
+    definition_period = periods.YEAR
+
+    def formula(entity, period, parameters):
+        eligible = entity("investment_eligibility", period)
+        if not eligible:
+            return 0.0
+
+        base = entity("investment_base_amount", period)
+        rate = entity("investment_support_rate", period)
+        return base * rate
+```
 
 **Kötü**
 
-- Aynı formülün `tax_office_code`, `company_age`, `employment_rate`, `exchange_rate` gibi gereksiz bağımlılıklara bulaşması.  
-- Her bağımlılık ekstra test yükü ve domino etkisi demektir; ISP’yi ihlal eder.
+```python
+class InvestmentSupportAmount(Variable):
+    """ISP ihlali: gereksiz bağımlılıklar formülü şişiriyor."""
+
+    def formula(entity, period, parameters):
+        _unused_tax_code = entity("tax_office_code", period)
+        _unused_company_age = entity("company_age", period)
+        _unused_employment_rate = entity("employment_rate", period)
+        _unused_exchange_rate = entity("daily_exchange_rate", period)
+
+        eligible = entity("investment_eligibility", period)
+        base = entity("investment_base_amount", period)
+        rate = entity("investment_support_rate", period)
+
+        if not eligible:
+            return 0.0
+        return base * rate
+```
 
 ### Dependency Inversion (DIP)
 
 **İyi**
 
-- `InvestmentZone` sadece `RegionResolver` arayüzü üzerinden zone bilgisini çeker.  
-- Resolver ister YAML’den, ister servis çağrısından beslensin; formülün umurunda olmaz.
+```python
+class InvestmentZone(Variable):
+    """DIP uyumlu: soyut RegionResolver'a bağlı."""
+
+    value_type = str
+    entity = ...
+    definition_period = periods.YEAR
+
+    def __init__(self, resolver: RegionResolver):
+        super().__init__()
+        self._resolver = resolver
+
+    def formula(self, entity, period, parameters):
+        tax_code = entity("tax_office_code", period)
+        # Resolver hangi kaynağı kullandığını bilir; formülün haberi yok.
+        return self._resolver.resolve(tax_code, period)
+```
 
 **Kötü**
 
-- Formül içinde `.csv` açıp vergi dairesi tablosu okumak.  
-- Detaya bağımlı olduğumuz için veri kaynağı değişince tüm formülleri revize etmek zorunda kalırız; DIP bozulur.
+```python
+class InvestmentZone(Variable):
+    """DIP ihlali: formül doğrudan CSV dosyasına bağımlı."""
+
+    def formula(entity, period, parameters):
+        import csv
+
+        tax_code = entity("tax_office_code", period)
+        with open("vergi_dairesi_bolge.csv") as fh:
+            for row in csv.DictReader(fh):
+                if row["tax_code"] == tax_code:
+                    return row["zone"]
+        return "UNKNOWN"
+```
 
 ---
 
