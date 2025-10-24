@@ -37,12 +37,41 @@
 
 ## 3. Neden Önemli? 
 
-- **Hak kaybı önleme:** Mevzuat değişikliklerini kaçıran YMM süreçleri yüzünden şirketlerin elinden kaçan teşvikleri sistematik şekilde geri kazandırırız. Hukukun en temel ve teknik konularından biri olan lehe kazanım kavramını, bu aşamada gerçekleştirdiğimiz çalışmayla yalnızca 2012/3305 için değil bundan sonra modelleyeceğimiz her nevi mevzuat açısından değerlendireceğimiz bir tecrübe alanı yaratmış oluruz.  
-- **Hız:** Mevzuat değiştiğinde manuel rapor beklemek yerine aynı gün güncelleme ve geri dönüş sağlarız. Projenin statik aşaması açısından hız kaygımız olmaz, bize ulaşmış bir teşvik belgesinin içindeki unsurları kendi kural motorlarımızla saniyeler içerisinde simule edilir, raporlanması sağlanır.
-- **Şeffaflık:** Her hesaplama mevzuat referansı ve sistem loguyla desteklenir; denetim yükünü azaltır. Simule edilmiş her teşvik belgesinin doğruluğu, aşağıda detaylandırılacak olan trace ve log mekanizmalarıyla analiz edilir. Tespit edilen lehe kazanımlara giden yol, kural motorunda takip edilen adımlar ve neden söz konusu kuralların takip edildiği gözleme ve analize açık olur.
-- **Ölçeklenebilirlik:** Aynı motoru farklı programlara (KOSGEB, TUBITAK, AB teşvikleri) uyarlamak kolaylaşır. Gerektiğinde farklı mevzuatlar için oluşturacağımız veri yapılarını modulerleştirilmiş kural motoruyla oluşturabiliriz. Öte yandan ekibin, 2012/3305 modellemesiyle edindiği tecrübe sayesinde oluşturacağı çalışma prensipleri ile buradan elde ettiği veriler ile besleyeceği yapay zeka sistemi sayesinde diğer mevzuatları/teşvikleri modellemek daha hızlı olur. 
-- **Bilgi Sürdürülebilirliği:** Uzman bilgisi dijital hale gelir; kurum hafızası korunur. Oluşturulan sistemin her yapı taşı iş analistleri tarafından dökumente edileceğinden tıpkı açık kaynak olarak çalışan bir sistem gibi, yalnızca kendi içimizde kullanacağımız şematik öğrenme ve geri bildirim prensipleriyle ekip ile business tarafı arasında hem bir "anayasa" hem de bir "köprü" kurulur.
-- **AI Hazırlığı:** Faz 1’de üretilen güvenilir veri, faz 2 ve 3’teki yapay zekâ projelerinin “yakıtı” olur. Bilindiği üzere en hafif yapay zekanın 8 ila 10 milyar arası parametresi mevcuttur. Yapay zeka eğitmek / fine tune etmek / deep learning sağlamak milyarlarca parametrenin arasında hedeflenen "idare hukukçusu" LLM'i yaratmak büyük veri kümeleri ile, simule edilmiş somut olay kurguları ile mümkündür. Bu sistemde, 12.000'den fazla sektör kodunun, modellenmiş mevzuatın yüzlerce parametre ve değişkeni iterasyona sokulduğunda ekibin elinde Türkiye'de daha önce bu denli spesifik bir konuda simule edilmemiş kadar hukuki "hazine" bulunmuş olur. Bu veri kümeleriyle eğitilen yapay zeka ile bir sonraki mevzuat sistemleri için yeni stratejik araçlar sağlanır.
+<details>
+<summary><strong>Hak kaybı önleme</strong></summary>
+
+**Hak kaybı önleme:** Mevzuat değişikliklerini kaçıran YMM süreçleri yüzünden şirketlerin elinden kaçan teşvikleri sistematik şekilde geri kazandırırız. Hukukun en temel ve teknik konularından biri olan lehe kazanım kavramını, bu aşamada gerçekleştirdiğimiz çalışmayla yalnızca 2012/3305 için değil bundan sonra modelleyeceğimiz her nevi mevzuat açısından değerlendireceğimiz bir tecrübe alanı yaratmış oluruz.  
+</details>
+
+<details>
+<summary><strong>Hız</strong></summary>
+
+**Hız:** Mevzuat değiştiğinde manuel rapor beklemek yerine aynı gün güncelleme ve geri dönüş sağlarız. Projenin statik aşaması açısından hız kaygımız olmaz, bize ulaşmış bir teşvik belgesinin içindeki unsurları kendi kural motorlarımızla saniyeler içerisinde simule edilir, raporlanması sağlanır.
+</details>
+
+<details>
+<summary><strong>Şeffaflık</strong></summary>
+
+**Şeffaflık:** Her hesaplama mevzuat referansı ve sistem loguyla desteklenir; denetim yükünü azaltır. Simule edilmiş her teşvik belgesinin doğruluğu, aşağıda detaylandırılacak olan trace ve log mekanizmalarıyla analiz edilir. Tespit edilen lehe kazanımlara giden yol, kural motorunda takip edilen adımlar ve neden söz konusu kuralların takip edildiği gözleme ve analize açık olur.
+</details>
+
+<details>
+<summary><strong>Ölçeklenebilirlik</strong></summary>
+
+**Ölçeklenebilirlik:** Aynı motoru farklı programlara (KOSGEB, TUBITAK, AB teşvikleri) uyarlamak kolaylaşır. Gerektiğinde farklı mevzuatlar için oluşturacağımız veri yapılarını modulerleştirilmiş kural motoruyla oluşturabiliriz. Öte yandan ekibin, 2012/3305 modellemesiyle edindiği tecrübe sayesinde oluşturacağı çalışma prensipleri, buradan elde ettiği veriler sayesinde besleyeceği yapay zeka sisteminin kullanılmasıyla diğer mevzuatları/teşvikleri modellemek daha hızlı olur. 
+</details>
+
+<details>
+<summary><strong>Bilgi Sürdürülebilirliği</strong></summary>
+
+**Bilgi Sürdürülebilirliği:** Uzman bilgisi dijital hale gelir; kurum hafızası korunur. Oluşturulan sistemin her yapı taşı ekip tarafından dökumente edileceğinden tıpkı açık kaynak olarak çalışan bir sistem gibi, yalnızca kendi içimizde kullanacağımız şematik öğrenme ve geri bildirim prensipleriyle IT ile business tarafı arasında hem bir "anayasa" hem de bir "köprü" kurulur.
+</details>
+
+<details>
+<summary><strong>AI Hazırlığı</strong></summary>
+
+**AI Hazırlığı:** Faz 1’de üretilen güvenilir veri, faz 2 ve 3’teki yapay zekâ projelerinin “yakıtı” olur. Bilindiği üzere en hafif yapay zekanın 8 ila 10 milyar arası parametresi mevcuttur. Yapay zeka eğitmek / fine tune etmek / deep learning sağlamak milyarlarca parametrenin arasında hedeflenen "idare hukukçusu" LLM'i yaratmak büyük veri kümeleri ile, simule edilmiş somut olay kurguları ile mümkündür. Bu sistemde, 12.000'den fazla sektör kodunun, modellenmiş mevzuatın yüzlerce parametre ve değişkeni iterasyona sokulduğunda ekibin elinde Türkiye'de daha önce bu denli spesifik bir konuda simule edilmemiş kadar hukuki "hazine" bulunmuş olur. Bu veri kümeleriyle eğitilen yapay zeka ile bir sonraki mevzuat sistemleri için yeni stratejik araçlar sağlanır.
+</details>
 
 ---
 
