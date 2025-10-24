@@ -59,19 +59,34 @@ Uzman bilgisi dijital hale gelir; kurum hafızası korunur. Oluşturulan sistemi
 
 ### AI Hazırlığı
 
-Faz 1’de üretilen güvenilir veri, faz 2 ve 3’teki yapay zekâ projelerinin “yakıtı” olur. Bilindiği üzere en hafif yapay zekanın 8 ila 10 milyar arası parametresi mevcuttur. Yapay zeka eğitmek / fine tune etmek / deep learning sağlamak milyarlarca parametrenin arasında hedeflenen "idare hukukçusu" LLM'i yaratmak büyük veri kümeleri ile, simule edilmiş somut olay kurguları ile mümkündür. Bu sistemde, 12.000'den fazla sektör kodunun, modellenmiş mevzuatın yüzlerce parametre ve değişkeni iterasyona sokulduğunda ekibin elinde Türkiye'de daha önce bu denli spesifik bir konuda simule edilmemiş kadar hukuki "hazine" bulunmuş olur. Bu veri kümeleriyle eğitilen yapay zeka ile bir sonraki mevzuat sistemleri için yeni stratejik araçlar sağlanır.
+Faz 1’de üretilen güvenilir veri, faz 2 ve 3’teki yapay zekâ projelerinin “yakıtı” olur. Bilindiği üzere en hafif yapay zekanın 8 ila 10 milyar arası parametresi mevcuttur. Yapay zeka eğitmek / fine tune etmek / deep learning sağlamak milyarlarca parametrenin arasında hedeflenen "idare hukukçusu" LLM'i yaratmak büyük veri kümeleri ile simule edilmiş somut olay kurguları ile mümkündür. Bu sistemde, 12.000'den fazla sektör kodunun, modellenmiş mevzuatın yüzlerce parametre ve değişkeni iterasyona sokulduğunda ekibin elinde Türkiye'de daha önce bu denli spesifik bir konuda simule edilmemiş kadar hukuki "hazine" bulunmuş olur. Bu veri kümeleriyle eğitilen yapay zeka ile bir sonraki mevzuat sistemleri için yeni stratejik araçlar sağlanır.
 
 
 
 ---
 
-## 4. Faz 1 – Statik Mevzuat Modelleme (6 Hafta)
+## 4. Faz 1 – Statik Mevzuat Modelleme (4 Hafta)
 
 ### 4.1 Ne Yapıyoruz?
-- YMM süreçlerinde gözden kaçan lehe hükümleri saptayabilmek için mevzuatı madde madde çıkarıyor, her maddeyi “kodda karşılığı olan” kurala çeviriyoruz.
-- Parametre dosyalarıyla oranları, tutarları, tarihleri saklıyoruz.
-- Test senaryoları ile kuralın doğru çalıştığını otomatik kanıtlıyoruz.
-- Trace kayıtları ile kararın dayandığı maddeyi gösteriyoruz.
+#### Kural modelleme
+
+Karmaşık mevzuat metinlerindeki kuralları, gerçek hayattaki ihtiyaçları karşılayacak anlamlı parametre bütünlerine dönüştürüyoruz.
+
+#### OpenFisca motoru
+
+Parametre ve değişken setlerini OpenFisca’nın hesaplama motoruna işleyip bağımlılık zincirini otomatik hale getiriyoruz; böylece her kural tek doğruluk kaynağına bağlanıyor.
+
+#### Veri harmanlama
+
+Parametre dosyalarıyla oranları, tutarları, tarihleri saklıyoruz.
+
+#### Test otomasyonu
+
+Test senaryoları ile kuralın doğru çalıştığını otomatik kanıtlıyoruz.
+
+#### İzlenebilirlik
+
+Trace kayıtları ile kararın dayandığı maddeyi gösteriyoruz.
 
 ### 4.2 Yönetsel Kazanımlar
 - Her teşvik ve şartın “tek doğru kaynağı” oluşur.
@@ -95,118 +110,209 @@ Faz 1’de üretilen güvenilir veri, faz 2 ve 3’teki yapay zekâ projelerinin
 
 ---
 
-## 5. Faz 2 – Bilgi Tabanı ve RAG Hazırlığı (4 Hafta)
+## 5. Hibrit Mimari: RAG + LLM ile Teşvik Hesaplama Sistemi
 
-### 5.1 Ne Yapıyoruz?
-- Faz 1’den çıkan güvenilir verileri, aranabilir bir bilgi tabanına dönüştürüyoruz.
-- Mevzuat metinleri, parametre açıklamaları, trace logları tek formatta toplanıyor.
-- Vektör arama ve anahtar kelime araması ile “soru → doğru paragraf” eşleşmesi kuruluyor.
+### 5.1 Genel Mimari ve Akış
 
-### 5.2 Yönetsel Kazanımlar
-- Uzman beklemeden mevzuat sorularına yanıt verebilen self-servis ekranlar.
-- Bilgi kirliliği azalır; aynı soruya herkes aynı sayfayı referans gösterir.
-- Raporlama ve denetim taleplerinde yanıt süresi düşer.
+Teşvik hesaplama sistemi, **LLM (Large Language Model) + RAG (Retrieval-Augmented Generation)** birleşiminden oluşan **hibrit bir mimari** ile çalışır.  
+Amaç, yatırım teşvik mevzuatına dayalı hesaplamaların hem teknik hem hukuki açıdan izlenebilir, doğrulanabilir ve güvenilir bir biçimde yürütülmesini sağlamaktır.
 
-### 5.3 Teknik Notlar (Özet Dil)
-- **ETL süreci:** Parametre dosyası değişince otomatik devreye giren veri aktarımı.  
-- **Standart kayıt yapısı:** Her bilgi parçası için `source_type`, `effective_date`, `regulation_id`.  
-- **RAG mimarisi:** Vektör veritabanı (Milvus/Qdrant vb.) + metin araması (Elasticsearch) hibrit.  
-- **Kalite ölçümü:** Golden set (uzman doğruladığı sorular) ile recall ve doğruluk izlenir.
+**Yetkili bilgi kaynağı**, 2012/3305 sayılı Yatırımlarda Devlet Yardımları Hakkında Karar ve ekleriyle birlikte, sistemde kodlanmış **OpenFisca kural setidir**.  
+Bu yapı, mevzuat hesaplamalarını, yasal dayanaklarıyla birlikte bütünleştirir.
 
-### 5.4 Kontrol Listesi
-```
-[ ] Mevzuat, parametre ve trace kayıtları aynı şemada tutuluyor
-[ ] ETL günlük olarak başarılı şekilde koşuyor
-[ ] Golden set sonuçları raporlandı (geri çağırma ≥ %85)
-[ ] Gizlilik taraması yapıldı (kişisel veri yok)
-[ ] Arama sonuçları mevzuat referansını gösteriyor
-```
+#### Mimari İşleyiş
 
----
+1. **Kullanıcı senaryosu**, OpenFisca üzerinde yürütülür ve mevzuat kurallarına göre hesaplanır.  
+2. **Mevzuat metinleri**, RAG katmanı tarafından vektör arama yoluyla anlamsal olarak bulunur.  
+3. **OpenFisca çıktısı** ve **ilgili mevzuat pasajları**, tek bir bağlam altında birleştirilir.  
+4. Bu bağlam, kurum içinde barındırılan **LLaMA tabanlı LLM** modeline aktarılır.  
+5. Model, hem sayısal hesaplamaları hem de hukuki atıfları içeren **kaynaklı açıklamalar** üretir.
 
-## 6. Faz 3 – Agentik Otomasyon ve LLM (6 Hafta)
+Operasyonel veriler, parametreler ve kullanıcı girdileri **PostgreSQL** üzerinde saklanır.  
+**Neo4j**, teşvik türleri–bölge–sektör–madde ilişkilerini görselleştirmek ve anlamlı bağlantıları keşfetmek için opsiyonel olarak kullanılabilir.  
+Tüm parametre ve kural dosyaları **Git** ile versiyonlanır; her değişiklik izlenebilir ve gerektiğinde önceki sürümler geri alınabilir.
 
-### 6.1 Ne Yapıyoruz?
-- Kullanıcı, chatbot/portal üzerinden soru soruyor.
-- Ajan soru tipini anlıyor; gerekirse OpenFisca hesaplaması yapıyor.
-- RAG’den mevzuat paragrafını çekiyor, sonucu ve referansı tek yanıtta birleştiriyor.
-- Gerekirse kurum verisiyle ince ayar (fine-tuning) yaparak modelin dilini bize uyduruyoruz.
+Bu mimari; mevzuat doğrulamalı, hesaplaması izlenebilir, **maliyet etkin** ve **ölçeklenebilir** bir karar destek altyapısı sunar.  
+Kurum içi barındırma, erişim kontrolü, anonimleştirme ve loglama katmanları ile **KVKK ve siber güvenlik** standartları tam olarak karşılanır.
 
-### 6.2 Yönetsel Kazanımlar
-- Müşteri veya iç ekip sorularına “referanslı ve hesaplanmış” cevaplar saniyeler içinde döner.
-- İnsan onayı gerektiren kritik cevaplarda yöneticiyi uyarır; risk kontrolü güçlenir.
-- Proaktif rapor ve uyarı sistemi (agent) ile mevzuat değişiklikleri anında bildirilir.
+#### Risk – Etki – Tolerans Tablosu
 
-### 6.3 Teknik Notlar (Özet Dil)
-- **Grounded AI:** LLM çıktısı, mutlaka OpenFisca sonucu + RAG kaynağı ile desteklenir.  
-- **Tool zinciri:** OpenFisca API, RAG araması, doküman üretici, insan onayı modülü.  
-- **Fine-tuning:** Kurumun onaylı soru-cevapları ile model eğitilir; PEFT/LoRA gibi hafif yöntemlerle maliyet düşürülür.  
-- **İzleme:** Yanıt doğruluğu, gecikme, başarısız tool çağrıları dashboard’da takip edilir.
-
-### 6.4 Kontrol Listesi
-```
-[ ] Agent senaryoları için insan-onay eşiği tanımlandı
-[ ] Her yanıt kaynak gösteriyor (knowledge_id, mevzuat linki)
-[ ] LLM değerlendirme raporu (hallucinasyon < %2) hazır
-[ ] Rollback planı ve eski modele dönüş testi yapıldı
-[ ] Operasyon logları KVKK/GDPR gerekliliklerine uygun
-```
+| Risk | Etki | Tolerans / Önlem Mekanizması |
+|------|------|-------------------------------|
+| Kaynaksız cevap üretimi | Yüksek | RAG zorunlu politika: kaynak bulunamazsa LLM cevap vermez. Cevaplar “traceable” formatta üretilir. |
+| Versiyon karmaşası (parametre–kural uyuşmazlığı) | Orta | Git tabanlı versiyon kontrolü, `parameters_version` etiketi ve otomatik sürüm eşlemesi kullanılır. |
+| Gecikme (RAG + LLM zinciri uzunluğu) | Orta | Önbellekleme, kısa bağlam politikası, yeniden sıralama (re-ranking) ve top-k optimizasyonu uygulanır. |
+| KVKK ihlali riski | Yüksek | Veriler yalnızca kurum içi sistemlerde işlenir. Erişim logları ve anonimleştirme zorunludur. |
+| Donanım darboğazı (yüksek işlem maliyeti) | Düşük | Modüler mimari sayesinde iş yükü yatay olarak ölçeklenir. Gerektiğinde GPU geçici kiralama yapılabilir. |
 
 ---
 
-## 7. Veri Yönetişimi & Güvenlik
+### 5.2 RAG Tercihinin Gerekçesi
 
-- **KVK/GDPR uyumu:** Girişlerde kişisel veri varsa maskelenir; üretim loglarında tutulmaz.
-- **Yetkilendirme:** Parametre dosyalarını sadece yetkili ekip değiştirebilir; onay kaydı zorunlu.
-- **Denetim izi:** Her hesaplama için trace ve kullanılan mevzuat parçası saklanır.
-- **Çeviklik + kontrol:** Değişiklikler önce test ortamında denenir, feature flag ile canlıya alınır.
-- **Alarm sistemi:** Yanıt kalitesi düşerse veya hatalı veri tespit edilirse yöneticilere uyarı gider.
+#### Şeffaflık
+RAG, cevabın dayandığı mevzuat pasajlarını **doğrudan** gösterir.  
+Her sonuç, hangi kanun veya karar maddesine dayandığını açık biçimde belirtir.  
+Bu özellik, sistemin “kara kutu” olmasını engeller; hem kullanıcı hem denetçi için denetlenebilirlik sağlar.
+
+**Tolerans:**  
+- Tüm yanıtlar kaynak referanslı üretildiği için hatalı içerik kolayca tespit edilir.  
+- Cevaplar, mevzuat kimliği (`regulation_id`) üzerinden loglanır.  
+
+#### Güncellik
+RAG mimarisi, modelin bilgi kesiti tarihinden bağımsız olarak **en güncel mevzuat değişikliklerini** yanıtlarında kullanabilir.  
+Yeni tebliğ veya karar yayımlandığında bilgi tabanına eklenir ve sistem derhal bu verileri kullanmaya başlar.
+
+**Tolerans:**  
+- Günlük otomatik ETL çalışmalarıyla yeni mevzuatlar vektör tabanına yüklenir.  
+- Her mevzuat kaydı `effective_date` alanıyla zaman damgalıdır, eski bilgiler otomatik olarak devre dışı kalır.  
+
+#### Maliyet ve Çeviklik
+RAG, modeli yeniden eğitmeden bilgiye erişim sağlar.  
+Bu sayede GPU eğitimi ve API kullanımı gibi yüksek maliyetli işlemlerden kaçınılır.  
+Yalnızca bilgi tabanına doküman eklenerek sistem güncel kalır.
+
+**Tolerans:**  
+- Genişleyen mevzuat hacmine karşılık, sorgu süresi artmaması için dinamik indeksleme yapılır.  
+- Performans izleme panelleriyle sorgu gecikmeleri takip edilir.  
+
+#### Doğruluk
+RAG, halüsinasyon (uydurma bilgi) riskini azaltır.  
+LLM yalnızca RAG tarafından getirilen doğrulanabilir içerikler üzerinden cevap üretir.
+
+**Tolerans:**  
+- Model, bağlam dışı bilgi üretmeye kalkarsa “no-answer” yanıtı döner.  
+- Kullanıcıya gerekçeli hata mesajı sunulur: “Bu konuda kaynak bulunamadı.”  
+
+#### Risk – Etki – Tolerans Tablosu
+
+| Risk | Etki | Tolerans / Önlem Mekanizması |
+|------|------|-------------------------------|
+| Yanlış paragraf eşleşmesi | Orta | Hibrit arama (BM25 + vektör) kullanılır, her yeni mevzuat “altın set” testinden geçer. |
+| İndeks gecikmesi | Düşük | “On-change” tetikleme mekanizması ve günlük toplu senkronizasyon. |
+| Uzun bağlam → yüksek gecikme | Düşük | Re-ranking + top-k (5) sınırı, metin kısaltma politikası. |
+| Eksik mevzuat verisi | Orta | Otomatik mevzuat kontrol listesi ve eksik belge uyarı raporları. |
 
 ---
 
-## 8. Roller ve İş Bölümü
+### 5.3 Veri Orkestrasyonu ve ETL Süreci
 
-- **Mevzuat Analisti:** Metinleri yorumlar, parametrelerin hukuki dayanağını yazar, onay verir.
-- **OpenFisca Geliştiricisi:** Kuralları kodlar, testleri yazar, trace çıktılarının doğruluğunu sağlar.
-- **Veri Mühendisi:** Faz 2’deki ETL ve arama altyapısını kurar, kalite raporlarını üretir.
-- **ML/AI Mühendisi:** Agent akışlarını ve LLM ince ayarını yönetir, performansı izler.
-- **Ürün Sahibi/Yönetici:** Öncelikleri belirler, faz geçiş onaylarını verir, paydaş iletişimini sağlar.
-- **Güvenlik & Uyumluluk:** Gizlilik kontrollerini yapar, denetim raporlarını takip eder.
+Veri akışı, sistemin sürekliliğini ve güvenilirliğini sağlar.  
+Her mevzuat değişikliği, otomatik olarak ETL sürecini tetikler ve yeni indeks oluşturur.
 
----
+- **Kayıt yapısı:** `source_type`, `effective_date`, `regulation_id`, `knowledge_id`, `hash`, `version`.  
+- **İzleme:** Her OpenFisca çalıştırması, kullanılan parametre sürümü ve mevzuat referanslarıyla birlikte loglanır.  
+- **Kalite kontrol:** Eksik veya hatalı indeksleme durumunda sistem otomatik uyarı üretir.  
+- **Denetim izlenebilirliği:** Tüm işlem geçmişi PostgreSQL log tablosunda saklanır.
 
-## 9. Zaman Çizelgesi ve Kilometre Taşları
-
-| Hafta | Aktivite | Teslimat |
-| --- | --- | --- |
-| 1-2 | Mevzuat analizi, parametre taslağı | Madde-fıkra ayrıştırma, onay matrisi |
-| 3-4 | Kodlama + testler | Çalışan OpenFisca değişkenleri, test raporu |
-| 5-6 | Trace arşivi, Faz 1 kontrol listesi | Hukuk onayı, audit seti |
-| 7-8 | ETL kurulumu, veri modeli | RAG bilgi tabanı ilk versiyon |
-| 9-10 | RAG kalite ölçümü | Golden set raporu, iyileştirme planı |
-| 11-12 | Agent prototipi | Hesaplama + açıklama veren MVP |
-| 13-14 | LLM ayarı ve üretim hazırlığı | İzleme dashboard’u, rollback testi |
-
-> Süreler örnektir; mevzuat kapsamı büyüdükçe Faz 1 ek sprintler gerektirebilir.
+**Tolerans:**  
+- ETL başarısız olduğunda, eski sürüm veritabanı yedekleriyle sistem çalışmaya devam eder (failover).  
+- Prometheus izleme sistemi kritik uyarıları teknik ekibe iletir.
 
 ---
 
-## 10. Riskler ve Çözüm Adımları
+## 6. LLM Fine-Tune Stratejisi
 
-- **Mevzuat yorumu farkı:** Hukuk onayı zorunlu; anlaşmazlıkta karar kayıt altına alınır.  
-- **Parametre drift’i:** Otomatik testler her gece koşar, beklenmeyen fark varsa alarm üretir.  
-- **RAG hatalı sonuç:** Geri çağırma raporları düzenli incelenir; eşik altına düşerse manuel müdahale.  
-- **LLM gizlilik riski:** Model eğitimi için kullanılan veri maskelenir; sözleşme ve erişim kontrolleri yapılır.  
-- **Operasyonel yük:** Agent çıktıları gözlemlenir; beklenmedik hatada otomatik olarak eski sürüme dönülür.
+### 6.1 Amaç
+Uzun vadede hedef, genel amaçlı bir LLM’i Türkçe teşvik mevzuatı ve hukuk diliyle özelleştirerek  
+**“hukuk dilini anlayan ve gerekçeli cevap üreten yapay zekâ asistanı”** oluşturmaktır.
+
+### 6.2 Yaklaşım
+
+- **Model:** Meta LLaMA ailesi, kurum içi barındırma.  
+- **Veri:** Türkçe teşvik mevzuatı, yönetmelikler, karar örnekleri, RAG tarafından doğrulanmış soru–cevap çiftleri.  
+- **Teknik:** Hafif ince ayar (LoRA/PEFT) ile düşük GPU maliyeti.  
+- **Gizlilik:** Tüm eğitim ve kullanım süreci kurum içinde gerçekleşir.  
+- **Değerlendirme:** Terminoloji doğruluğu, kaynak gösterme ve bağlam tutarlılığı ölçülür.
+
+### 6.3 Faydalar
+
+- Alan uzmanlığı: Model, teşvik kavramlarını ve istisna mantığını doğal biçimde öğrenir.  
+- Uyarlanabilirlik: Yeni mevzuatlar eklendikçe yeniden eğitilebilir.  
+- Kuruma özel dil: Model, kurumun iletişim tarzına uygun yanıt üretir.  
+- Maliyet avantajı: Açık model kullanımı, API bağımlılığını ortadan kaldırır.  
+- Veri gizliliği: KVKK riski ortadan kalkar.
+
+#### Risk – Etki – Tolerans Tablosu
+
+| Risk | Etki | Tolerans / Önlem Mekanizması |
+|------|------|-------------------------------|
+| Eğitim verisi yetersizliği | Orta | RAG çıktılarından türetilmiş QA setleriyle veri artırımı yapılır. |
+| Aşırı maliyet | Düşük | LoRA/PEFT yöntemiyle GPU maliyeti %90 düşürülür. |
+| Model eskimesi | Orta | Her 6 ayda bir yeniden eğitme döngüsü uygulanır. |
+| Gizlilik ihlali | Yüksek | Model ve veriler kurum içi güvenli ağda tutulur, dış bağlantı yoktur. |
+| Düşük kalite çıktılar | Orta | Golden set değerlendirmesiyle kalite kontrol sağlanır. |
 
 ---
 
-## 11. Sonraki Adımlar
+## 7. RAG + LLM Hibrit Stratejisi
 
-1. Faz 1 kapsamındaki mevcut mevzuat modellerini bu dokümanın kontrol listesi ile kıyaslayın.  
-2. Trace ve parametre metadata’larını günlük ETL sürecine aktaran küçük bir PoC hazırlayın.  
-3. RAG pilotu için 10 mevzuat maddesi ve 20 test sorusundan oluşan mini veri seti oluşturun.  
-4. Agent mimarisinde kullanılacak araçları (OpenFisca API, arama, raporlama) sözleşmeleriyle tanımlayın.  
-5. Dil modeli alternatiflerini (Türkçe kapsama, lisans, maliyet) kıyaslayan kısa bir değerlendirme raporu hazırlayın.
+### 7.1 Entegrasyon Yapısı
 
-Bu yol haritası, hukuki doğruluğu ispatlanmış bir çekirdek üzerine adım adım yapay zekâ destekli karar desteği kurmak için rehberlik eder. Her faz tamamlandığında kurum hem teknik hem iş tarafında ölçülebilir bir değer kazanır.
+RAG ve fine-tune edilmiş LLM birlikte çalışarak hem **güncel bilgiye erişimi** hem **doğru yorumlamayı** sağlar:
+
+1. **RAG** güncel mevzuat ve parametreleri getirir.  
+2. **LLM**, bu bağlamı işleyip açıklayıcı yanıt üretir.  
+3. Cevap, hem hesaplama sonucunu hem mevzuat referansını içerir.  
+
+### 7.2 Bilgi Döngüsü
+
+RAG’in doğrulanmış yanıtları, LLM’in eğitim verisine dönüştürülür.  
+Model, geçmiş başarılı cevaplardan öğrenerek giderek daha yüksek isabet oranına ulaşır.  
+Bu yapı, sistemin “kendi kendini geliştirebilen” bir hale gelmesini sağlar.
+
+### 7.3 Operasyonel Denge
+
+RAG, yeni mevzuatlara anında uyum sağlarken;  
+LLM, kullanıcı deneyimini güçlendirir ve dilsel tutarlılığı artırır.  
+Bu sayede sistem, teknik olarak **esnek**, **ölçeklenebilir** ve **denetlenebilir** kalır.
+
+#### Risk – Etki – Tolerans Tablosu
+
+| Risk | Etki | Tolerans / Önlem Mekanizması |
+|------|------|-------------------------------|
+| RAG–LLM senkronizasyonu kaybolması | Orta | `knowledge_id` tabanlı sürüm eşlemesi ve zaman damgası kontrolü. |
+| Performans düşüşü | Orta | CI/CD entegrasyonu ve otomatik kalite testleri. |
+| Halüsinasyon | Düşük | RAG kaynak zorunluluğu, grounded output politikası. |
+| Model kararlılığı | Orta | Sürümleme politikası, rollback ve gözetimli test süreci. |
+
+---
+
+## 8. Karar ve Yol Haritası
+
+### 8.1 Kısa Vade (0–6 Ay)
+
+- Mevcut **RAG tabanlı sistem** üretimde kalacak.  
+- OpenFisca–RAG veri senkronizasyonu sağlanacak.  
+- LLaMA fine-tune eğitimi tamamlanacak, pilot testler yapılacak.  
+- Hatalı sorgular için hata izleme mekanizması devreye alınacak.
+
+**Tolerans:**  
+Kritik hatalarda RAG fallback mekanizması devreye girer; sistem daima en son kararlı sürüme döner.
+
+### 8.2 Orta Vade (6–12 Ay)
+
+- **RAG + Fine-Tuned LLM hibrit sistem** üretime alınacak.  
+- Performans, güvenlik ve doğruluk ölçütleri düzenli izlenecek.  
+- Kullanıcı geri bildirimleri doğrultusunda model güncellemeleri planlanacak.
+
+**Tolerans:**  
+Senkronizasyon kaybı veya kalite düşüşü durumunda, yalnızca RAG moduna geçiş yapılabilir (geçici tekil mod).
+
+### 8.3 Uzun Vade (12 Ay ve Sonrası)
+
+- Sistem, KOSGEB, TÜBİTAK ve AB destek mekanizmalarını da kapsayacak şekilde genişletilecektir.  
+- LLM, mevzuat değişikliklerini **proaktif özetleyen asistan** haline gelecektir.  
+- Kurumsal bilgi birikimi, sürekli öğrenen yapay zekâ mimarisine dönüşecektir.
+
+**Tolerans:**  
+Yeni mevzuat modülleri eklendiğinde sistemin kararlılığını korumak için her genişleme öncesi A/B testleri yapılacaktır.
+
+---
+
+## 9. Sonuç
+
+RAG + LLM hibrit mimarisi, kısa vadede **şeffaflık ve doğruluk**, orta vadede **derin analiz ve verimlilik**, uzun vadede ise **kurumsal öğrenme ve stratejik avantaj** sağlar.  
+RAG bileşeni, sistemin denetlenebilir omurgasını oluştururken; fine-tune edilmiş LLM, yorumlama ve açıklama kalitesini güçlendirir.
+
+Riskler tamamen yönetilebilir niteliktedir; her biri için açık tolerans ve önlem mekanizmaları tanımlanmıştır.  
+Sonuç olarak, bu mimari yalnızca bir yazılım çözümü değil, kurumsal bilgi birikimini dijitalleştiren ve karar süreçlerini hızlandıran **akıllı bir teşvik danışmanlık altyapısı** sunmaktadır.
